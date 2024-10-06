@@ -3,9 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-
 import javax.swing.Timer;
-
 import acm.graphics.GLabel;
 import acm.graphics.GObject;
 import acm.graphics.GOval;
@@ -19,6 +17,7 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 	private GLabel text;
 	private Timer movement;
 	private RandomGenerator rgen;
+	private int numTimes;  
 	
 	public static final int SIZE = 25;
 	public static final int SPEED = 2;
@@ -31,8 +30,9 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 		rgen = RandomGenerator.getInstance();
 		balls = new ArrayList<GOval>();
 		enemies = new ArrayList<GRect>();
+		numTimes = 0;  
 		
-		text = new GLabel(""+enemies.size(), 0, WINDOW_HEIGHT);
+		text = new GLabel("" + enemies.size(), 0, WINDOW_HEIGHT);
 		add(text);
 		
 		movement = new Timer(MS, this);
@@ -42,6 +42,11 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 	
 	public void actionPerformed(ActionEvent e) {
 		moveAllBallsOnce();
+		numTimes++;  
+		
+		if(numTimes % 40 == 0) {
+			addAnEnemy();
+		}
 	}
 	
 	public void mousePressed(MouseEvent e) {
@@ -60,28 +65,28 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 	}
 	
 	public GOval makeBall(double x, double y) {
-		GOval temp = new GOval(x-SIZE/2, y-SIZE/2, SIZE, SIZE);
+		GOval temp = new GOval(x - SIZE / 2, y - SIZE / 2, SIZE, SIZE);
 		temp.setColor(Color.RED);
 		temp.setFilled(true);
 		return temp;
 	}
 	
 	private void addAnEnemy() {
-		GRect e = makeEnemy(rgen.nextInt(0, WINDOW_HEIGHT-SIZE/2));
+		GRect e = makeEnemy(rgen.nextInt(0, WINDOW_HEIGHT - SIZE / 2));
 		enemies.add(e);
 		text.setLabel("" + enemies.size());
 		add(e);
 	}
 	
 	public GRect makeEnemy(double y) {
-		GRect temp = new GRect(WINDOW_WIDTH-SIZE, y-SIZE/2, SIZE, SIZE);
+		GRect temp = new GRect(WINDOW_WIDTH - SIZE, y - SIZE / 2, SIZE, SIZE);
 		temp.setColor(Color.GREEN);
 		temp.setFilled(true);
 		return temp;
 	}
 
 	private void moveAllBallsOnce() {
-		for(GOval ball:balls) {
+		for(GOval ball : balls) {
 			ball.move(SPEED, 0);
 		}
 	}
@@ -90,7 +95,8 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 		setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 	}
 	
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		new DodgeBall().start();
 	}
 }
+

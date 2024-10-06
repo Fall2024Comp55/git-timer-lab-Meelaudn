@@ -5,11 +5,11 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.Timer;
 import acm.graphics.GLabel;
-import acm.graphics.GObject;
 import acm.graphics.GOval;
 import acm.graphics.GRect;
 import acm.program.GraphicsProgram;
 import acm.util.RandomGenerator;
+import acm.graphics.GObject;
 
 public class DodgeBall extends GraphicsProgram implements ActionListener {
 	private ArrayList<GOval> balls;
@@ -17,7 +17,7 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 	private GLabel text;
 	private Timer movement;
 	private RandomGenerator rgen;
-	private int numTimes;  
+	private int numTimes; 
 	
 	public static final int SIZE = 25;
 	public static final int SPEED = 2;
@@ -30,7 +30,7 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 		rgen = RandomGenerator.getInstance();
 		balls = new ArrayList<GOval>();
 		enemies = new ArrayList<GRect>();
-		numTimes = 0;  
+		numTimes = 0; 
 		
 		text = new GLabel("" + enemies.size(), 0, WINDOW_HEIGHT);
 		add(text);
@@ -41,8 +41,8 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		moveAllEnemiesOnce(); 
 		moveAllBallsOnce();
+		moveAllEnemiesOnce();  
 		numTimes++;  
 		
 		if(numTimes % 40 == 0) {
@@ -51,7 +51,7 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 	}
 	
 	public void mousePressed(MouseEvent e) {
-		for(GOval b:balls) {
+		for(GOval b : balls) {
 			if(b.getX() < SIZE * 2.5) {
 				return;
 			}
@@ -60,7 +60,7 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 	}
 	
 	private void addABall(double y) {
-		GOval ball = makeBall(SIZE/2, y);
+		GOval ball = makeBall(SIZE / 2, y);
 		add(ball);
 		balls.add(ball);
 	}
@@ -87,8 +87,22 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 	}
 
 	private void moveAllBallsOnce() {
-		for(GOval ball : balls) {
+		for (GOval ball : balls) {
 			ball.move(SPEED, 0);
+			checkCollisionWithEnemies(ball);  
+		}
+	}
+	
+	private void checkCollisionWithEnemies(GOval ball) {
+		int xCheck = (int) (ball.getX() + ball.getWidth());
+		int yCheck = (int) (ball.getY() + ball.getHeight() / 2);  
+		
+		GObject object = getElementAt(xCheck, yCheck);
+		
+		if (object instanceof GRect) {
+			remove(object);
+			enemies.remove(object);
+			text.setLabel("" + enemies.size()); 
 		}
 	}
 	
@@ -107,4 +121,5 @@ public class DodgeBall extends GraphicsProgram implements ActionListener {
 		new DodgeBall().start();
 	}
 }
+
 
